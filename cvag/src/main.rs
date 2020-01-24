@@ -28,9 +28,14 @@ fn main() {
 
         let mut client = Client::new().unwrap();
         let now = chrono::Local::now();
+        let station_data = client.stations(None).unwrap();
 
         for station in stations {
-            println!("Station {}:", station);
+            let name = &station_data
+                .iter()
+                .find(|s| s.number == station)
+                .map_or("", |s| &s.display_name);
+            println!("{} ({}):", name, station);
             let stop_list = client.stops(station).unwrap();
             for stop in stop_list.stops {
                 let departure = stop.actual_departure.with_timezone(&chrono::Local);
@@ -46,7 +51,7 @@ fn main() {
                 }
 
                 print!(
-                    "    {:<13} {:>4} | {:02}:{:02} | in ",
+                    " {:<13} {:>4} | {:02}:{:02} | in ",
                     stop.service_type,
                     stop.line,
                     departure.hour(),
@@ -66,6 +71,7 @@ fn main() {
 
                 println!(" min | {}", stop.destination);
             }
+            println!();
         }
     }
 }
