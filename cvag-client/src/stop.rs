@@ -19,11 +19,11 @@ impl RestPath<u64> for StopList {
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct Stop {
-    destination: String,
-    service_type: String,
-    has_actual_departure: bool,
+    pub destination: String,
+    pub service_type: String,
+    pub has_actual_departure: bool,
     #[serde(with = "ts_milliseconds")]
-    actual_departure: DateTime<Utc>,
-    line: String,
-    platform: Option<String>,
+    pub actual_departure: DateTime<Utc>,
+    pub line: String,
+    pub platform: Option<String>,
 }

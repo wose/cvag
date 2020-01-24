@@ -7,3 +7,5 @@ edition = "2018"
 [dependencies]
 cvag-client = { path = "../cvag-client" }
 clap = "2.33.0"
+termion = "1.5.5"
+chrono = "0.4.10"
