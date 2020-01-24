@@ -1,0 +1,6 @@
+[workspace]
+
+members = [
+    "cvag",
+    "cvag-client",
+]
