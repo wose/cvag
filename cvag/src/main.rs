@@ -2,7 +2,7 @@ use chrono::Timelike;
 use clap::{values_t, App, Arg};
 use termion::{color, style};
 
-use cvag_client::Client;
+use cvag_client::{Client, ServiceType};
 
 fn main() {
     let matches = App::new("cvag")
@@ -41,17 +41,21 @@ fn main() {
                 let departure = stop.actual_departure.with_timezone(&chrono::Local);
                 let diff = departure - now;
 
-                match stop.service_type.as_ref() {
-                    "BUS" => print!("  {}██{}", color::Fg(color::LightMagenta), style::Reset),
-                    "TRAM" => print!("  {}██{}", color::Fg(color::Red), style::Reset),
-                    "CHEMNITZBAHN" => {
+                match stop.service_type {
+                    ServiceType::Bus => {
+                        print!("  {}██{}", color::Fg(color::LightMagenta), style::Reset)
+                    }
+                    ServiceType::Tram => print!("  {}██{}", color::Fg(color::Red), style::Reset),
+                    ServiceType::ChemnitzBahn => {
                         print!("  {}██{}", color::Fg(color::LightGreen), style::Reset)
                     }
-                    _ => print!("    "),
+                    ServiceType::SchienenErsatzVerkehr => {
+                        print!("  {}██{}", color::Fg(color::Yellow), style::Reset)
+                    }
                 }
 
                 print!(
-                    " {:<13} {:>4} | {:02}:{:02} | in ",
+                    " {:<4} {:>4} | {:02}:{:02} | in ",
                     stop.service_type,
                     stop.line,
                     departure.hour(),
@@ -60,7 +64,7 @@ fn main() {
 
                 if stop.has_actual_departure {
                     print!(
-                        "{}{:>3}{}",
+                        "{}{:>2}{}",
                         color::Fg(color::Green),
                         diff.num_minutes(),
                         style::Reset
